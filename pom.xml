@@ -3,18 +3,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.vaadin.addons.mygroup</groupId>
-    <artifactId>axa-input-text</artifactId>
+    <groupId>org.vaadin.addons.lipisak</groupId>
+    <artifactId>vaadin-slidetab</artifactId>
 
-    <!-- Add-on version number. Snapshot is good for development,
-    but when publishing, make sure to use semantic version number like '1.0.0'.
-    See https://semver.org/ -->
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
 
-    <!-- Change this. The name is used when you publish to Vaadin Directory.
-    Make sure to use a unique name by first searching at https://vaadin.com/directory -->
-    <name>AXA Input Text</name>
-    <description>Integration of axa-input-text for Vaadin platform</description>
+    <name>SlideTab for Vaadin 24+</name>
+    <description>SlideTab based on Erik Lumme SlideTab add-on which was discontinued. This version is for Vaadin 24+</description>
 
     <properties>
 
@@ -28,30 +23,28 @@
         E.g. Java 11 for Vaadin 23 and Java 8 for Vaadin 14. -->
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <javaVersion>17</javaVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <jetty.version>11.0.13</jetty.version>
 
         <!-- Vaadin add-on metadata -->
-        <vaadin.addon.owner>Add-on Author Name</vaadin.addon.owner>
+        <vaadin.addon.owner>Jiri Slivarich</vaadin.addon.owner>
         <vaadin.addon.license>Apache License 2.0</vaadin.addon.license>
         <vaadin.addon.name>${project.name}</vaadin.addon.name>
         <vaadin.addon.jar>${project.build.finalName}.${project.packaging}</vaadin.addon.jar>
         <vaadin.addon.version>${project.version}</vaadin.addon.version>
     </properties>
     <organization>
-        <!-- Name of the add-on author and URL.
-        Update these to match your own name and website. -->
-        <name>Add-on Author Name</name>
-        <url>https://vaadin.com/directory</url>
+        <name>Jiri Slivarich</name>
     </organization>
     <licenses>
         <license>
             <!-- The license of this add-on.
             We recommend to use the same Apache 2 open source license like Vaadin itself. -->
             <name>Apache 2</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -104,27 +97,44 @@
     <dependencies>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <!-- Try to keep transitive dependencies in add-ons to minimum.
-                 Usually flow-server is enough, but if you extend an existing
-                 component, add that directly as well or change to
-                 vaadin/vaadin-core (worse option)
-            -->
-            <artifactId>flow-server</artifactId>
+            <!-- Replace artifactId with vaadin-core to use only free components -->
+            <artifactId>vaadin-core</artifactId>
+            <exclusions>
+                <!-- Webjars are only needed when running in Vaadin 13 compatibility
+                    mode in V14. Your add-on can support npm in the same version mode and V13
+                    compatiblity mode at the same time, or with separate versions. Any V13 version
+                    should work with the compatibility mode in V14. -->
+                <exclusion>
+                    <groupId>com.vaadin.webjar</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.insites</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.polymer</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.polymerelements</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.vaadin</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.webjars.bowergithub.webcomponents</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Shouldn't be needed, probably a bug the flow-client is not brought in via flow-server-->
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>flow-client</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <!-- Other components are probably handy when building test views -->
-            <!-- Replace artifactId with vaadin to use commercial components -->
-            <artifactId>vaadin-core</artifactId>
-            <scope>test</scope>
-            <!-- If addon uses the vaadin dependency change scope from test to provided -->
-            <!-- <scope>provided</scope> -->
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>

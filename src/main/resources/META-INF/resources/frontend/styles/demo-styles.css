@@ -1,0 +1,44 @@
+html {
+    --slide-tab-color: green;
+}
+
+slide-tab vaadin-button {
+    background-color: var(--lumo-contrast-60pct);
+    color: white;
+}
+
+.demo-view {
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+}
+
+/* Demo view panels */
+.left-panel, .right-panel {
+    display: flex;
+    flex-flow: column;
+    padding: 60px;
+    position: relative;
+}
+.left-panel {
+    background-color: var(--lumo-contrast-80pct);
+    width: 400px;
+}
+.right-panel {
+    flex-grow: 1;
+}
+
+#left-panel-content {
+    width: 400px;
+}
+
+#right-panel-bottom-content vaadin-grid {
+    width: 600px;
+}
+
+#outer-panel {
+    --slide-tab-background-color: gold;
+    --slide-tab-color: #731010;
+}
