@@ -9,7 +9,6 @@ import com.vaadin.flow.server.Command;
 import com.vaadin.flow.shared.Registration;
 
 import java.util.Arrays;
-import java.util.Timer;
 import java.util.TimerTask;
 
 /**
@@ -27,7 +26,9 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
     private Component expandComponent;
     private Component collapseComponent;
 
-    private SlideMode slideMode;
+    private final SlideMode slideMode;
+    private final ScheduleStrategy scheduleStrategy;
+
     private boolean expanded;
     private boolean autoCollapsing;
     private boolean toggleEnabled;
@@ -35,9 +36,6 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
     private int pixelSize;
     private int animationDuration;
     private int zIndex;
-
-    private Timer timer = new Timer();
-    private TabTask currentTask;
 
     public SlideTab(SlideTabBuilder builder) {
         add(builder.content);
@@ -54,6 +52,12 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
         setClosingOnOutsideClick(builder.autoCollapseSlider);
         setTabVisible(builder.tabVisible);
         setToggleEnabled(true);
+
+        if (builder.scheduleStrategy != null) {
+            scheduleStrategy = builder.scheduleStrategy;
+        } else {
+            scheduleStrategy = new DefaultScheduleStrategy();
+        }
 
         if (builder.listeners != null) {
             builder.listeners.forEach(this::addToggleListener);
@@ -87,7 +91,7 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
     }
 
     private void doExpand() {
-        getElement().callJsFunction("expand",pixelSize,slideMode.isVertical());
+        getElement().callJsFunction("expand", pixelSize, slideMode.isVertical());
     }
 
     /**
@@ -136,14 +140,14 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      * Sets the caption of the tab
      */
     public void setCaption(final String caption) {
-        getModel().setCaption(caption);
+        getElement().setProperty("caption", caption);
     }
 
     /**
      * Returns the caption of the tab
      */
     public String getCaption() {
-        return getModel().getCaption();
+        return getElement().getProperty("caption", null);
     }
 
     /**
@@ -201,6 +205,11 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      */
     public void setClosingOnOutsideClick(boolean autoCollapsing) {
         this.autoCollapsing = autoCollapsing;
+        setElementClosingOnOutsideClick();
+    }
+
+    private void setElementClosingOnOutsideClick() {
+        getElement().callJsFunction("setClosingOnOutsideClick", autoCollapsing);
     }
 
     /**
@@ -312,11 +321,7 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      * @param delayMillis millis in future the task will happen
      */
     public void scheduleExpand(final boolean value, final boolean animated, final int delayMillis) {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-        currentTask = new TabTask(() -> setExpanded(value, animated));
-        timer.schedule(currentTask, delayMillis);
+        scheduleStrategy.schedule(new TabTask(() -> setExpanded(value, animated)), delayMillis);
     }
 
     /**
@@ -326,11 +331,7 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      * @param delayMillis millis in future the task will happen
      */
     public void scheduleToggle(final int delayMillis) {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-        currentTask = new TabTask(this::toggle);
-        timer.schedule(currentTask, delayMillis);
+        scheduleStrategy.schedule(new TabTask(this::toggle), delayMillis);
     }
 
     /**
@@ -340,11 +341,7 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      * @param delayMillis millis in future the task will happen
      */
     public void scheduleCollapse(final int delayMillis) {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-        currentTask = new TabTask(this::collapse);
-        timer.schedule(currentTask, delayMillis);
+        scheduleStrategy.schedule(new TabTask(this::collapse), delayMillis);
     }
 
     /**
@@ -354,11 +351,7 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
      * @param delayMillis millis in future the task will happen
      */
     public void scheduleExpand(final int delayMillis) {
-        if (currentTask != null) {
-            currentTask.cancel();
-        }
-        currentTask = new TabTask(this::expand);
-        timer.schedule(currentTask, delayMillis);
+        scheduleStrategy.schedule(new TabTask(this::expand), delayMillis);
     }
 
     /**
@@ -385,9 +378,9 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
     /**
      * A utility class for wrapping a command in a TimerTask and running it in the UI
      */
-    private class TabTask extends TimerTask {
+    public class TabTask extends TimerTask {
 
-        private Command command;
+        private final Command command;
 
         private TabTask(Command command) {
             this.command = command;
@@ -399,30 +392,13 @@ public class SlideTab extends LitTemplate implements HasComponents, HasSize, Has
         }
     }
 
-    public interface SlideTabModel {
-        void setCaption(String caption);
-        String getCaption();
-    }
-
     @Override
     public void onAttach(AttachEvent attachEvent) {
         // Ensures the component in the browser is in sync
         if (expanded) {
             doExpand();
         }
+        setElementClosingOnOutsideClick();
     }
 
-	private SlideTabModel getModel() {
-		return new SlideTabModel() {
-			@Override
-			public void setCaption(String caption) {
-				getElement().setProperty("caption", caption);
-			}
-
-			@Override
-			public String getCaption() {
-				return getElement().getProperty("caption", null);
-			}
-		};
-	}
 }
