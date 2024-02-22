@@ -41,6 +41,8 @@ public class SlideTabBuilder {
 
     protected int zIndex = 1;
 
+    protected ScheduleStrategy scheduleStrategy;
+
     /**
      * creates an builder instance that can be configured fluently
      *
@@ -216,6 +218,15 @@ public class SlideTabBuilder {
      */
     public SlideTabBuilder zIndex(int zIndex) {
         this.zIndex = zIndex;
+        return this;
+    }
+
+    /**
+     * Can be overridden to gain more control over how collapse/expand commands are scheduled,
+     * for example what threads are used.
+     */
+    public SlideTabBuilder scheduleStrategy(ScheduleStrategy scheduleStrategy) {
+        this.scheduleStrategy = scheduleStrategy;
         return this;
     }
 
