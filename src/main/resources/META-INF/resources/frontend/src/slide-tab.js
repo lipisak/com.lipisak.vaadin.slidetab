@@ -181,8 +181,11 @@ class SlideTab extends ThemableMixin(LitElement) {
     this.$server.toggle();
   }
 
-  expand(size, vertical) {
+  async expand(size, vertical) {
+    await this.updateComplete;
     let content = this.renderRoot.querySelector("#content");
+    if (content == null) return; //Content not yet rendered! Skip this turn
+
     // Calculate the size if size is negative or zero
     if (size <= 0) {
       size = vertical ? content.scrollHeight : content.scrollWidth;
@@ -198,7 +201,8 @@ class SlideTab extends ThemableMixin(LitElement) {
     document.body.addEventListener("click", this.outsideClickListener);
   }
 
-  collapse(vertical) {
+  async collapse(vertical) {
+    await this.updateComplete;
     if (vertical) {
       this.renderRoot.querySelector("#content").style.height = "0";
     } else {
