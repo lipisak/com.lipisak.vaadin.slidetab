@@ -151,7 +151,8 @@ class SlideTab extends ThemableMixin(LitElement) {
   }
 
   render() {
-    return html` <div part="tab" id="tab" @click="${this.toggle}">
+    return html` 
+      <div part="tab" id="tab" @click="${this.toggle}">
         ${this.caption}
         <div id="expand">
           <slot name="expand">
@@ -167,7 +168,8 @@ class SlideTab extends ThemableMixin(LitElement) {
       </div>
       <div part="content" id="content">
         <slot></slot>
-      </div>`;
+      </div>
+    `;
   }
 
   constructor() {
@@ -207,8 +209,9 @@ class SlideTab extends ThemableMixin(LitElement) {
     document.body.removeEventListener("click", this.outsideClickListener);
   }
 
+
   _onOutsideClick(event) {
-    if (!this._isChildElement(event.target)) {
+    if (this.isClosingOnOutsideClickEnabled && !this._isChildElement(event.target)) {
       this.$server.onOutsideClicked();
     }
   }
@@ -251,6 +254,11 @@ class SlideTab extends ThemableMixin(LitElement) {
     super.disconnectedCallback();
     document.body.removeEventListener("click", this.outsideClickListener);
   }
+
+  setClosingOnOutsideClick(enabled) {
+    this.isClosingOnOutsideClickEnabled = enabled;
+  }
+
 }
 
 customElements.define(SlideTab.is, SlideTab);
