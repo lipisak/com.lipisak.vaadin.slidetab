@@ -6,9 +6,9 @@
     <groupId>org.vaadin.addons.lipisak</groupId>
     <artifactId>vaadin-slidetab</artifactId>
 
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
 
-    <name>SlideTab for Vaadin</name>
+    <name>SlideTab for Vaadin 24+</name>
     <description>SlideTab based on Erik Lumme SlideTab add-on which was discontinued. This version is for Vaadin 24+</description>
 
     <properties>
