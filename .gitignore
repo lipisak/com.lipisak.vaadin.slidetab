@@ -16,3 +16,5 @@ error-screenshots/
 webpack.generated.js
 frontend/generated/
 /pom.xml.versionsBackup
+
+/src/main/bundles

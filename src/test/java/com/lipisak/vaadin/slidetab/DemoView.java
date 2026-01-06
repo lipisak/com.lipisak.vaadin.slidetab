@@ -15,8 +15,6 @@ import com.vaadin.flow.router.Route;
 
 import java.util.Arrays;
 
-
-@CssImport("./styles/demo-styles.css")
 @Route("")
 public class DemoView extends Div {
 
