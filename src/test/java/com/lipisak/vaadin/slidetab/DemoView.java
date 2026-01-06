@@ -3,7 +3,6 @@ package com.lipisak.vaadin.slidetab;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Paragraph;
@@ -82,7 +81,7 @@ public class DemoView extends Div {
     private int getIntValue(TextField field) {
         try {
             field.setErrorMessage(null);
-            return Integer.valueOf(field.getValue());
+            return Integer.parseInt(field.getValue());
         } catch (NumberFormatException e) {
             field.setErrorMessage("Not an integer");
             return 0;
