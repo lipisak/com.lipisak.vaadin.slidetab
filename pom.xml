@@ -286,8 +286,7 @@
             <dependencies>
                 <dependency>
                     <groupId>com.vaadin</groupId>
-                    <artifactId>vaadin-core</artifactId>
-                    <scope>runtime</scope>
+                    <artifactId>flow-server-production-mode</artifactId>
                 </dependency>
             </dependencies>
             <build>
@@ -302,9 +301,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                        <configuration>
-                            <optimizeBundle>false</optimizeBundle>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -315,9 +311,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.eclipse.jetty</groupId>
-                        <artifactId>jetty-maven-plugin</artifactId>
-                        <version>11.0.13</version>
+                        <groupId>org.eclipse.jetty.ee10</groupId>
+                        <artifactId>jetty-ee10-maven-plugin</artifactId>
+                        <version>${jetty.version}</version>
                         <configuration>
                             <scan>0</scan>
                             <supportedPackagings>
